@@ -1,6 +1,9 @@
 import tkinter as tk
 from tkinter import font as tkfont
 import ttkbootstrap as tkb
+from PIL import Image
+Image.CUBIC = Image.BICUBIC
+
 
 
 
@@ -86,28 +89,30 @@ if __name__ == "__main__":
 
     # Configure main frame
     frame = tkb.Frame(root, padding="10")
-    frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=10, pady=10)
+    frame.pack(fill="both", expand=True, padx=10, pady=10)    # Converted to a pack layout.
     frame.configure(border=0, relief="flat")
-    root.columnconfigure(0, weight=1)
-    root.rowconfigure(0, weight=1)
 
     # Header
     header_label = tkb.Label(frame, text="KeyStrength", font=title_font)
     subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords at the click of a button.", font=subtitle_font, foreground="#494949")
-    header_label.grid(column=0, row=0, sticky=(tk.W), padx=38, pady=5)    # Logo here? (Made space to left of header)
-    subtitle_label.grid(column=0, row=1, sticky=(tk.W), padx=39)
+    header_label.pack(anchor=(tk.W), padx=38, pady=5)    # Logo here? (Made space to left of header)
+    subtitle_label.pack(anchor=(tk.W), padx=39)
 
     # Password input
     input_frame = tkb.Frame(frame)
-    input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
+    input_frame.pack(fill="x", pady=(0, 20), padx=40)
+
     password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=58)
-    password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
+    password_entry.pack(side="left", pady=20)
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
 
     # Check strength button
-    check_strength = tkb.Button(frame, text="Check", width=10)
-    check_strength.grid(column=0, row=2, pady=(65, 0), sticky=(tk.E))
+    button_frame = tkb.Frame(frame)
+    button_frame.pack(pady=(0, 20), padx=40)
+
+    check_strength = tkb.Button(button_frame, text="Check", width=10)
+    check_strength.pack(padx=300)
 
 
     # Event loop
