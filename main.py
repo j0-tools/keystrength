@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import font as tkfont
 import ttkbootstrap as tkb
+from ttkbootstrap import Style
+from ttkbootstrap.widgets import Meter
 from PIL import Image
 Image.CUBIC = Image.BICUBIC
 
@@ -85,7 +87,7 @@ if __name__ == "__main__":
     style.configure("TEntry", fieldbackground=entry_bg_colour, foreground=fg_colour, font=main_font, relief="ridge")
     style.configure("TButton", background=button_colour, foreground=accent_colour, font=main_font)
     style.map("TButton", background=[('active', button_hover_colour)])
-
+                      
     # Configure main frame
     frame = tkb.Frame(root, padding="10")
     frame.grid(column=0, row=0, sticky=(tk.W, tk.E, tk.N, tk.S), padx=10, pady=10)
@@ -109,10 +111,16 @@ if __name__ == "__main__":
 
     # Check strength button
     check_strength = tkb.Button(frame, text="Check", width=10)
-    check_strength.grid(column=0, row=2, pady=(65, 0), sticky=(tk.E))
+    check_strength.grid(column=0, row=2, pady=(65, 0), padx=40, sticky=(tk.W))
 
     # Strength meter
-    meter = tkb.Meter(frame, subtext="Strength", interactive=False, metertype="semi", stripethickness=10)
+    meter = tkb.Meter(frame, 
+                      subtext="Strength", 
+                      interactive=False, 
+                      metertype="semi", 
+                      stripethickness=10, 
+                      bootstyle="success",    # <25="danger", <75="warning", 76-100="success"
+                      amountused=95,)
     meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
 
     # Feedback area
