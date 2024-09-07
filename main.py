@@ -66,9 +66,10 @@ if __name__ == "__main__":
     # Styling
     bg_colour = "#f3f3f3"
     fg_colour = "#191919"
-    accent_colour = ""
+    accent_colour = "#f3f3f3"
     entry_bg_colour = "#ffffff"
-    button_colour = "#0c55cc"
+    button_colour = "#0f6aff"
+    button_hover_colour = "#0c55cc"
 
     title_font = tkfont.Font(family="Gadugi", size=30, weight="bold")
     subtitle_font = tkfont.Font(family="Gadugi", size=13)
@@ -80,8 +81,8 @@ if __name__ == "__main__":
     style.configure("TFrame", background=bg_colour)
     style.configure("TLabel", background=bg_colour, foreground=fg_colour, font=main_font)
     style.configure("TEntry", fieldbackground=entry_bg_colour, foreground=fg_colour, font=main_font, relief="ridge")
-    style.configure("TButton", background=button_colour, foreground=fg_colour, font=main_font)
-    style.map("TButton", background=[('active', accent_colour)])
+    style.configure("TButton", background=button_colour, foreground=accent_colour, font=main_font)
+    style.map("TButton", background=[('active', button_hover_colour)])
 
     # Configure main frame
     frame = tkb.Frame(root, padding="10")
@@ -93,16 +94,20 @@ if __name__ == "__main__":
     # Header
     header_label = tkb.Label(frame, text="KeyStrength", font=title_font)
     subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords at the click of a button.", font=subtitle_font, foreground="#494949")
-    header_label.grid(column=0, row=0, sticky=(tk.W), padx=40, pady=5)    # Logo here? (Made space to left of header)
-    subtitle_label.grid(column=0, row=1, sticky=(tk.W), padx=40)
+    header_label.grid(column=0, row=0, sticky=(tk.W), padx=38, pady=5)    # Logo here? (Made space to left of header)
+    subtitle_label.grid(column=0, row=1, sticky=(tk.W), padx=39)
 
     # Password input
     input_frame = tkb.Frame(frame)
     input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
-    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=52)
-    password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=40)
+    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=58)
+    password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
+
+    # Check strength button
+    check_strength = tkb.Button(frame, text="Check", width=10)
+    check_strength.grid(column=0, row=2, pady=(65, 0), sticky=(tk.E))
 
 
     # Event loop
