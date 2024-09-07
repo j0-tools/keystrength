@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import font as tkfont
 import ttkbootstrap as tkb
+from PIL import Image
+Image.CUBIC = Image.BICUBIC
 
 
 
@@ -60,7 +62,7 @@ if __name__ == "__main__":
     root.title("KeyStrength")
 
     # Window styling
-    root.geometry("800x400")
+    root.geometry("850x450")
     root.resizable(False, False)
 
     # Styling
@@ -100,7 +102,7 @@ if __name__ == "__main__":
     # Password input
     input_frame = tkb.Frame(frame)
     input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
-    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=58)
+    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=55)
     password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
@@ -109,6 +111,18 @@ if __name__ == "__main__":
     check_strength = tkb.Button(frame, text="Check", width=10)
     check_strength.grid(column=0, row=2, pady=(65, 0), sticky=(tk.E))
 
+    # Strength meter
+    meter = tkb.Meter(frame, subtext="Strength", interactive=False, metertype="semi", stripethickness=10)
+    meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
+
+    # Feedback area
+    feedback_frame = tkb.Frame(frame, borderwidth=2, relief="solid", padding="60")
+    feedback_frame.grid(column=0, row=4, columnspan=4, pady=10, padx=39, sticky=(tk.W, tk.E, tk.N, tk.S))
+    feedback = tkb.Label(feedback_frame, font=main_font)
+    feedback.grid(row=3, column=0, columnspan=4)
+
+    # Layout
+    root.columnconfigure(1, weight=1)
 
     # Event loop
     root.configure(bg=bg_colour)
