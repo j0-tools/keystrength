@@ -51,8 +51,100 @@ def console_check():
             break
 
     print("\nThanks for using KeyStrength!")
-
 #console_check()
+
+
+
+### PASSWORD CHECK FUNCTIONALITY ###
+
+class Password():
+    def __init__(self, password):
+        self.password = password
+        self.score = 0
+
+
+    # Length check (working)
+    def length_check(self):
+        length = len(self.password)
+        if length < 8:
+            return 0
+        elif length < 12:
+            return 9
+        elif length < 16:
+            return 14
+        else:
+            return 20
+    
+    # Diversity check
+    def diversity_check(self):
+        
+        categories = 0
+        score = 0
+
+        if any(c.islower() for c in self.password):
+            categories += 1
+            score += 4
+        if any(c.isupper() for c in self.password):
+            categories += 1
+            score += 4 
+        if any(c.isdigit() for c in self.password):
+            categories += 1
+            score += 4
+        if any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password):
+            categories += 1
+            score += 8
+
+        if categories == 4:
+            score += 5
+
+        return score
+    
+    # Common words
+    def common_words_check(self):
+        common_words = "JSON file here"    # Import JSON list here. (https://raw.githubusercontent.com/dropbox/zxcvbn/master/data/passwords.txt)
+        if any(word in self.password.lower() for word in common_words):
+            return 0
+        else:
+            return 15
+    
+    # Repeated characters 
+    def repeat_check(self):
+        if any(self.password.count(c) >= 3 for c in set(self.password)):
+            return 0
+        else:
+            return 10
+        
+    # Consecutive characters
+    def consecutive_char_check(self):
+        "not figured out yet"
+        pass
+
+    # Dictionary words
+    def dictionary_words_check(self):
+        dictionary = "JSON file here"    # Import https://raw.githubusercontent.com/dropbox/zxcvbn/master/data/english_wikipedia.txt
+        if any(word in self.password.lower() for word in dictionary):
+            return 0
+        else:
+            return 10
+        
+    # Entropy (randomness)
+    def entropy_check(self):
+        "not figured out yet"
+        pass
+
+
+    # Final sstrength
+    def strength(self):
+        self.score += self.length_check()
+        self.score += self.diversity_check()
+        self.score += self.common_words_check()
+        self.score += self.repeat_check()
+        self.score += self.consecutive_char_check()
+        self.score += self.dictionary_words_check()
+        self.score += self.entropy_check()
+
+
+        
 
 
 
