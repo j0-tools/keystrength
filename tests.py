@@ -18,13 +18,13 @@ class Password():
     def length_check(self):
         length = len(self.password)
         if length < 8:
-            return 0
+            return -5
         elif length < 12:
-            return 9
+            return 5
         elif length < 16:
-            return 14
+            return 15
         else:
-            return 20
+            return 30
     
     # Diversity check (WORKING)
     def diversity_check(self):
@@ -34,19 +34,16 @@ class Password():
 
         if any(c.islower() for c in self.password):
             categories += 1
-            score += 4
         if any(c.isupper() for c in self.password):
             categories += 1
-            score += 4
         if any(c.isdigit() for c in self.password):
             categories += 1
-            score += 4
         if any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password):
             categories += 1
-            score += 8
 
+        score = categories * 3
         if categories == 4:
-            score += 5
+            score += 7
 
         return score
     
@@ -58,7 +55,7 @@ class Password():
         password_lower = self.password.lower()
 
         if any(word.lower() in password_lower for word in common_passwords):
-            return 0
+            return -10
         else:
             return 15
     
@@ -72,7 +69,7 @@ class Password():
         if any(name.lower() in password_lower for name in common_names):
             return 0
         else:
-            return 15
+            return 5
 
     # Dictionary words (WORKING)
     def dictionary_words_check(self):
@@ -84,7 +81,7 @@ class Password():
         if any(word in self.password for word in longer_words):
             return 0
         else:
-            return 10
+            return 5
 
     # Repeated characters (WORKING)
     def repeat_check(self):
@@ -101,9 +98,11 @@ class Password():
         if entropy < 40:
             return 0
         elif entropy < 60:
-            return 3
-        else:
             return 5
+        elif entropy < 80:
+            return 10
+        else:
+            return 20
 
 
 
@@ -111,14 +110,16 @@ class Password():
 
     # Strength
     def strength(self):
-        self.score += self.length_check()
-        self.score += self.diversity_check()
-        self.score += self.common_passwords_check()
-        self.score += self.common_names_check()
-        self.score += self.dictionary_words_check()
-        self.score += self.repeat_check()
-        self.score += self.entropy_check()
-        return self.score
+        self.score = (
+            self.length_check() +
+            self.diversity_check() +
+            self.common_passwords_check() +
+            self.common_names_check() +
+            self.dictionary_words_check() +
+            self.repeat_check() +
+            self.entropy_check() 
+        )
+        return max(0, min(100, self.score))    # 0-100
 
 
 while True:
