@@ -1,3 +1,4 @@
+import json
 import tkinter as tk
 from tkinter import font as tkfont
 import ttkbootstrap as tkb
@@ -63,7 +64,7 @@ class Password():
         self.score = 0
 
 
-    # Length check (working)
+    # Length check (WORKING)
     def length_check(self):
         length = len(self.password)
         if length < 8:
@@ -75,7 +76,7 @@ class Password():
         else:
             return 20
     
-    # Diversity check
+    # Diversity check (WORKING)
     def diversity_check(self):
         
         categories = 0
@@ -107,17 +108,17 @@ class Password():
         else:
             return 15
     
-    # Repeated characters 
+    # Personal info
+    def info_check(self):
+        # Import JSON data
+        pass
+
+    # Repeated characters (WORKING)
     def repeat_check(self):
-        if any(self.password.count(c) >= 3 for c in set(self.password)):
+        if any(self.password.count(c) > 3 for c in set(self.password)) or "abc" in self.password or "123" in self.password:
             return 0
         else:
             return 10
-        
-    # Consecutive characters
-    def consecutive_char_check(self):
-        "not figured out yet"
-        pass
 
     # Dictionary words
     def dictionary_words_check(self):
