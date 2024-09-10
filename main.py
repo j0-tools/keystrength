@@ -134,12 +134,12 @@ class Password():
         with open("data/dictionarywords.json", "r") as file:
             common_words = json.load(file)
 
-        password_lower = self.password.lower()
+        longer_words = [word for word in common_words if len(word) >= 3]
         
-        if any(word.lower() in password_lower for word in common_words):
+        if any(word in self.password for word in longer_words):
             return 0
         else:
-            return 15
+            return 10
 
     # Repeated characters (WORKING)
     def repeat_check(self):
