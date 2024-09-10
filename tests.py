@@ -1,3 +1,5 @@
+import json
+
 # class Password():
 #     def __init__(self, password):
 #         self.password = password
@@ -50,14 +52,21 @@ class Password():
         self.password = password
         self.score = 0
         
-    def repeat_check(self):
-        if any(self.password.count(c) >= 3 for c in set(self.password)):
+    # Common passwords
+    def common_passwords_check(self):
+        with open ('data/passwords.json', 'r') as file:
+            common_passwords = json.load(file)
+
+        if self.password.lower() in (word.lower() for word in common_passwords):
             return 0
         else:
-            return 10
+            return 15
         
-password = Password("abcabcabc")
-print(password.repeat_check())
+
+password = "evkphewof"
+check = Password(password)
+result = check.common_passwords_check()
+print(f"0 if not in list, 15 if is in list: {result}")
 
 
 
