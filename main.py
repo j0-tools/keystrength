@@ -1,4 +1,6 @@
+import math
 import json
+
 import tkinter as tk
 from tkinter import font as tkfont
 import ttkbootstrap as tkb
@@ -64,6 +66,9 @@ class Password():
         self.score = 0
 
 
+
+    ### CHECKS ###
+
     # Length check (WORKING)
     def length_check(self):
         length = len(self.password)
@@ -100,7 +105,7 @@ class Password():
 
         return score
     
-    # Common passwords (WORKING, BUGS)
+    # Common passwords (WORKING; UNFINISHED)
     def common_passwords_check(self):
         with open ("data/passwords.json", "r") as file:
             common_passwords = json.load(file)
@@ -110,7 +115,7 @@ class Password():
         else:
             return 15
     
-    # Personal info (names, movies, etc) (WORKING, BUGS)
+    # Personal info (names, movies, etc) (WORKING; UNFINISHED)
     def common_names_check(self):
         with open("data/names.json", "r") as file:
             common_names = json.load(file)
@@ -120,7 +125,7 @@ class Password():
         else:
             return 15
 
-    # Dictionary words (WORKING; BUGS)
+    # Dictionary words (WORKING; UNFINISHED)
     def dictionary_words_check(self):
         with open("data/dictionarywords.json", "r") as file:
             common_words = json.load(file)
@@ -137,13 +142,23 @@ class Password():
         else:
             return 10
         
-    # Entropy (randomness)
+    # Entropy (randomness) (AI MADE THIS FUNCTION - TEST)
     def entropy_check(self):
-        "not figured out yet"
-        pass
+        char_set = set(self.password)
+        entropy = len(self.password) * math.log2(len(char_set))
+
+        if entropy < 40:
+            return 0
+        elif entropy < 60:
+            return 3
+        else:
+            return 5
 
 
-    # Final sstrength
+
+    ### FINAL STRENGTH ###
+
+    # Strength
     def strength(self):
         self.score += self.length_check()
         self.score += self.diversity_check()
@@ -155,9 +170,6 @@ class Password():
 
 
         
-
-
-
 ### GUI ###
 
 # Main
