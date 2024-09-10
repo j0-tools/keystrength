@@ -100,9 +100,9 @@ class Password():
 
         return score
     
-    # Common passwords
+    # Common passwords (WORKING, BUGS)
     def common_passwords_check(self):
-        with open ('data/passwords.json', 'r') as file:
+        with open ("data/passwords.json", "r") as file:
             common_passwords = json.load(file)
 
         if self.password.lower() in (word.lower() for word in common_passwords):
@@ -110,18 +110,25 @@ class Password():
         else:
             return 15
     
-    # Personal info (names, movies, etc)
-    def common_info_check(self):
-        # Import JSON data
-        pass
-
-    # Dictionary words
-    def dictionary_words_check(self):
-        dictionary = "JSON file here"    # Import https://raw.githubusercontent.com/dropbox/zxcvbn/master/data/english_wikipedia.txt
-        if any(word in self.password.lower() for word in dictionary):
+    # Personal info (names, movies, etc) (WORKING, BUGS)
+    def common_names_check(self):
+        with open("data/names.json", "r") as file:
+            common_names = json.load(file)
+        
+        if self.password.lower() in (word.lower() for word in common_names):
             return 0
         else:
-            return 10
+            return 15
+
+    # Dictionary words (WORKING; BUGS)
+    def dictionary_words_check(self):
+        with open("data/dictionarywords.json", "r") as file:
+            common_words = json.load(file)
+        
+        if self.password.lower() in (word.lower() for word in common_words):
+            return 0
+        else:
+            return 15
 
     # Repeated characters (WORKING)
     def repeat_check(self):

@@ -52,21 +52,20 @@ class Password():
         self.password = password
         self.score = 0
         
-    # Common passwords
-    def common_passwords_check(self):
-        with open ('data/passwords.json', 'r') as file:
-            common_passwords = json.load(file)
-
-        if self.password.lower() in (word.lower() for word in common_passwords):
+    def dictionary_words_check(self):
+        with open("data/dictionarywords.json", "r") as file:
+            common_words = json.load(file)
+        
+        if self.password.lower() in (word.lower() for word in common_words):
             return 0
         else:
             return 15
         
 
-password = "evkphewof"
+password = "ewgewge"
 check = Password(password)
-result = check.common_passwords_check()
-print(f"0 if not in list, 15 if is in list: {result}")
+result = check.dictionary_words_check()
+print(f"0 if in list // 15 if not in list: {result}")
 
 
 
