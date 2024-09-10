@@ -105,32 +105,38 @@ class Password():
 
         return score
     
-    # Common passwords (WORKING; UNFINISHED)
+    # Common passwords (WORKING)
     def common_passwords_check(self):
         with open ("data/passwords.json", "r") as file:
             common_passwords = json.load(file)
 
-        if self.password.lower() in (word.lower() for word in common_passwords):
+        password_lower = self.password.lower()
+
+        if any(word.lower() in password_lower for word in common_passwords):
             return 0
         else:
             return 15
     
-    # Personal info (names, movies, etc) (WORKING; UNFINISHED)
+    # Personal info (names, movies, etc) (WORKING)
     def common_names_check(self):
         with open("data/names.json", "r") as file:
             common_names = json.load(file)
         
-        if self.password.lower() in (word.lower() for word in common_names):
+        password_lower = self.password.lower()
+        
+        if any(name.lower() in password_lower for name in common_names):
             return 0
         else:
             return 15
 
-    # Dictionary words (WORKING; UNFINISHED)
+    # Dictionary words (WORKING)
     def dictionary_words_check(self):
         with open("data/dictionarywords.json", "r") as file:
             common_words = json.load(file)
+
+        password_lower = self.password.lower()
         
-        if self.password.lower() in (word.lower() for word in common_words):
+        if any(word.lower() in password_lower for word in common_words):
             return 0
         else:
             return 15
@@ -162,11 +168,12 @@ class Password():
     def strength(self):
         self.score += self.length_check()
         self.score += self.diversity_check()
-        self.score += self.common_words_check()
-        self.score += self.repeat_check()
-        self.score += self.consecutive_char_check()
+        self.score += self.common_passwords_check()
+        self.score += self.common_names_check()
         self.score += self.dictionary_words_check()
+        self.score += self.repeat_check()
         self.score += self.entropy_check()
+        return self.score
 
 
         
