@@ -194,7 +194,7 @@ class Password():
         else:
             return 8
         
-    # Entropy (randomness) (AI MADE THIS FUNCTION - TEST)
+    # Entropy (randomness)
     def entropy_check(self):
         char_set = set(self.password)
         entropy = len(self.password) * math.log2(len(char_set))
@@ -216,7 +216,6 @@ class Password():
 
     ### FINAL STRENGTH ###
 
-    # Strength
     def strength(self):
         self.score = (
             self.length_check() +
@@ -289,8 +288,21 @@ if __name__ == "__main__":
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
 
+    def password_check():
+        password = password_entry.get()
+        check = Password(password)
+        score = check.strength()
+        meter.configure(amountused=score)
+
+        if score <= 25:
+            meter.configure(bootstyle="danger")
+        elif score <= 75:
+            meter.configure(bootstyle="warning")
+        else:
+            meter.configure(bootstyle="success")
+
     # Check strength button
-    check_strength = tkb.Button(frame, text="Check", width=10)
+    check_strength = tkb.Button(frame, text="Check", width=10, command=password_check)
     check_strength.grid(column=0, row=2, pady=(65, 0), padx=40, sticky=(tk.W))
 
     # Strength meter
@@ -299,8 +311,8 @@ if __name__ == "__main__":
                       interactive=False, 
                       metertype="semi", 
                       stripethickness=10, 
-                      bootstyle="success",    # <25="danger", <75="warning", 76-100="success"
-                      amountused=95,)
+                      bootstyle="",  
+                      amountused=0,)
     meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
 
     # Feedback area
@@ -311,6 +323,9 @@ if __name__ == "__main__":
 
     # Layout
     root.columnconfigure(1, weight=1)
+
+    # Binds
+    root.bind("<Return>", lambda event: password_check())
 
     # Event loop
     root.configure(bg=bg_colour)
