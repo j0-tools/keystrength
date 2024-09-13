@@ -18,7 +18,7 @@ class Password():
     def length_check(self):
         length = len(self.password)
         if length < 9:
-            return -5
+            return -13
         elif length < 11:
             return 5
         elif length < 13:
@@ -53,9 +53,13 @@ class Password():
         if any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password):
             categories += 1
 
-        score = categories * 3
+        score = categories * 4
+        
         if categories == 4:
-            score += 15
+            score += 10
+
+        if categories <= 1:
+            score -= 10
 
         return score
     
@@ -71,10 +75,10 @@ class Password():
 
             password_lower = self.password.lower()
 
-            if any(word.lower() in password_lower for word in common_passwords):
-                return -10
+            if password_lower in (pw.lower() for pw in common_passwords):
+                return -33
             else:
-                return 10
+                return 8
     
     # Personal info (names, movies, etc) (WORKING)
     def common_names_check(self):
@@ -89,7 +93,7 @@ class Password():
             if any(name.lower() in password_lower for name in common_names):
                 return -5
             else:
-                return 5
+                return 8
 
     # Dictionary words (WORKING)
     def dictionary_words_check(self):
@@ -104,7 +108,7 @@ class Password():
             if any(word in self.password for word in longer_words):
                 return -5
             else:
-                return 5
+                return 8
 
     # Repeated characters (WORKING)
     def repeat_check(self):
@@ -133,35 +137,34 @@ class Password():
         "!@#", "@#$", "#$%", "$%^", "%^&", "^&*", "&*(", "*()"]
 
         if any(password_lower.count(c) > 2 for c in set(password_lower)):
-            return -3
+            return -10
         elif any(seq in password_lower for seq in common):
-            return -3
+            return -10
         else:
-            return 8
+            return 10
         
-    # Entropy (randomness) (AI MADE THIS FUNCTION - TEST)
+    # Entropy (randomness)
     def entropy_check(self):
         char_set = set(self.password)
         entropy = len(self.password) * math.log2(len(char_set))
 
-        if entropy < 45:
-            return 0
+        if entropy < 5:
+            return -50
+        elif entropy < 35:
+            return -10
+        elif entropy < 40:
+            return 5
         elif entropy < 55:
-            return 8
-        elif entropy < 70:
+            return 10
+        elif entropy < 75:
             return 15
-        elif entropy < 85:
-            return 22
-        elif entropy < 105:
-            return 28
         else:
-            return 35
+            return 20
 
 
 
     ### FINAL STRENGTH ###
 
-    # Strength
     def strength(self):
         self.score = (
             self.length_check() +
@@ -176,7 +179,7 @@ class Password():
             self.score += 5
         if len(self.password) > 30:
             self.score += 5
-        return max(0, min(100, self.score))    # 0-100
+        return max(1, min(100, self.score))    # 1-100
 
 
 while True:
