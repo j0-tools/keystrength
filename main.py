@@ -72,8 +72,8 @@ class Password():
     # Length check (WORKING)
     def length_check(self):
         length = len(self.password)
-        if length < 9:
-            return -5
+        if length < 8:
+            return -15
         elif length < 11:
             return 5
         elif length < 13:
@@ -127,7 +127,7 @@ class Password():
             password_lower = self.password.lower()
 
             if any(word.lower() in password_lower for word in common_passwords):
-                return -10
+                return -20
             else:
                 return 10
     
@@ -199,7 +199,9 @@ class Password():
         char_set = set(self.password)
         entropy = len(self.password) * math.log2(len(char_set))
 
-        if entropy < 45:
+        if entropy < 5:
+            return -50
+        elif entropy < 45:
             return 0
         elif entropy < 55:
             return 8
@@ -230,7 +232,7 @@ class Password():
             self.score += 5
         if len(self.password) > 30:
             self.score += 5
-        return max(0, min(100, self.score))    # 0-100
+        return max(1, min(100, self.score))    # 1-100
 
 
 
@@ -318,8 +320,8 @@ if __name__ == "__main__":
     # Feedback area
     feedback_frame = tkb.Frame(frame, borderwidth=2, relief="solid", padding="60")
     feedback_frame.grid(column=0, row=4, columnspan=4, pady=10, padx=39, sticky=(tk.W, tk.E, tk.N, tk.S))
-    feedback = tkb.Label(feedback_frame, font=main_font)
-    feedback.grid(row=3, column=0, columnspan=4)
+    feedback_area = tkb.Label(feedback_frame, font=main_font)
+    feedback_area.grid(row=3, column=0, columnspan=4)
 
     # Layout
     root.columnconfigure(1, weight=1)
