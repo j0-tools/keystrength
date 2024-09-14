@@ -17,73 +17,67 @@ class Password():
     # Length check (WORKING)
     def length_check(self):
         length = len(self.password)
-        if length < 9:
-            return -13
+        if length < 8:
+            return -30
         elif length < 11:
-            return 5
+            return 0
         elif length < 13:
+            return 4
+        elif length < 18:
             return 8
-        elif length < 15:
-            return 12
-        elif length < 17:
-            return 15
-        elif length < 19:
-            return 20
-        elif length < 22:
-            return 25
-        elif length < 24:
-            return 30
-        elif length < 28:
-            return 35
         else:
-            return 40
+            return 34
     
     # Diversity check (WORKING)
     def diversity_check(self):
-        
-        categories = 0
-        score = 0
 
-        if any(c.islower() for c in self.password):
-            categories += 1
-        if any(c.isupper() for c in self.password):
-            categories += 1
-        if any(c.isdigit() for c in self.password):
-            categories += 1
-        if any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password):
-            categories += 1
+        if len (self.password) >= 18:
+            return 11
 
-        score = categories * 4
-        
-        if categories == 4:
-            score += 10
+        else:
+            categories = 0
+            score = 0
 
-        if categories <= 1:
-            score -= 10
+            if any(c.islower() for c in self.password):
+                categories += 1
+            if any(c.isupper() for c in self.password):
+                categories += 1
+            if any(c.isdigit() for c in self.password):
+                categories += 1
+            if any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password):
+                categories += 1
 
-        return score
+            score = categories * 3
+            
+            if categories == 4:
+                score += 10
+
+            if categories < 4 and len(self.password) < 15:
+                score -= 11 
+
+            if categories <= 1:
+                score -= 15
+
+            return score
     
     # Common passwords (WORKING)
     def common_passwords_check(self):
-        if len (self.password) >= 25:
-            return 5
-        if len (self.password) >= 20:
-            return 3
+        with open ("data/passwords.json", "r") as file:
+            common_passwords = json.load(file)
+
+        common_passwords_lower = {pw.lower() for pw in common_passwords}    # Convert list to lower rather than input (efficiency)
+
+        password_lower = self.password.lower()
+
+        if password_lower in common_passwords_lower:
+            return -100
         else:
-            with open ("data/passwords.json", "r") as file:
-                common_passwords = json.load(file)
-
-            password_lower = self.password.lower()
-
-            if password_lower in (pw.lower() for pw in common_passwords):
-                return -33
-            else:
-                return 8
+            return 6
     
     # Personal info (names, movies, etc) (WORKING)
     def common_names_check(self):
-        if len (self.password) >= 15:
-            return 5
+        if len (self.password) >= 18:
+            return 11
         else:
             with open("data/names.json", "r") as file:
                 common_names = json.load(file)
@@ -91,14 +85,14 @@ class Password():
             password_lower = self.password.lower()
             
             if any(name.lower() in password_lower for name in common_names):
-                return -5
+                return -8
             else:
-                return 8
+                return 6
 
     # Dictionary words (WORKING)
     def dictionary_words_check(self):
-        if len (self.password) >= 15:
-            return 5
+        if len (self.password) >= 18:
+            return 11
         else:
             with open("data/dictionarywords.json", "r") as file:
                 common_words = json.load(file)
@@ -106,9 +100,9 @@ class Password():
             longer_words = [word for word in common_words if len(word) >= 3]
             
             if any(word in self.password for word in longer_words):
-                return -5
+                return -6
             else:
-                return 8
+                return 6
 
     # Repeated characters (WORKING)
     def repeat_check(self):
@@ -137,11 +131,11 @@ class Password():
         "!@#", "@#$", "#$%", "$%^", "%^&", "^&*", "&*(", "*()"]
 
         if any(password_lower.count(c) > 2 for c in set(password_lower)):
-            return -10
+            return -8
         elif any(seq in password_lower for seq in common):
-            return -10
+            return -8
         else:
-            return 10
+            return 11
         
     # Entropy (randomness)
     def entropy_check(self):
@@ -150,14 +144,14 @@ class Password():
 
         if entropy < 5:
             return -50
-        elif entropy < 35:
+        elif entropy < 25:
             return -10
-        elif entropy < 40:
+        elif entropy < 30:
+            return 0
+        elif entropy < 45:
             return 5
-        elif entropy < 55:
+        elif entropy < 65:
             return 10
-        elif entropy < 75:
-            return 15
         else:
             return 20
 
@@ -175,8 +169,6 @@ class Password():
             self.repeat_check() +
             self.entropy_check() 
         )
-        if self.score >= 50:
-            self.score += 5
         if len(self.password) > 30:
             self.score += 5
         return max(1, min(100, self.score))    # 1-100

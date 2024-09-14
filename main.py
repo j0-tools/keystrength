@@ -69,7 +69,7 @@ class Password():
 
     ### CHECKS ###
 
-    # Length check (WORKING)
+    # Length check
     def length_check(self):
         length = len(self.password)
         if length < 8:
@@ -93,7 +93,7 @@ class Password():
         else:
             return 40
     
-    # Diversity check (WORKING)
+    # Diversity check
     def diversity_check(self):
         
         categories = 0
@@ -114,15 +114,19 @@ class Password():
 
         return score
     
-    # Common passwords (WORKING)
+    # Common passwords
     def common_passwords_check(self):
         if len (self.password) >= 25:
             return 5
         if len (self.password) >= 20:
             return 3
         else:
-            with open ("data/passwords.json", "r") as file:
-                common_passwords = json.load(file)
+            try:
+                with open ("data/passwords.json", "r") as file:
+                    common_passwords = json.load(file)
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                print(f"Error loading common passwords list: {e}")
+                return 0
 
             password_lower = self.password.lower()
 
@@ -131,13 +135,17 @@ class Password():
             else:
                 return 10
     
-    # Personal info (names, movies, etc) (WORKING)
+    # Personal info (names, movies, etc)
     def common_names_check(self):
         if len (self.password) >= 15:
             return 5
         else:
-            with open("data/names.json", "r") as file:
-                common_names = json.load(file)
+            try:
+                with open("data/names.json", "r") as file:
+                    common_names = json.load(file)
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                print(f"Error loading common names list: {e}")
+                return 0
             
             password_lower = self.password.lower()
             
@@ -146,13 +154,17 @@ class Password():
             else:
                 return 5
 
-    # Dictionary words (WORKING)
+    # Dictionary words
     def dictionary_words_check(self):
         if len (self.password) >= 15:
             return 5
         else:
-            with open("data/dictionarywords.json", "r") as file:
-                common_words = json.load(file)
+            try:
+                with open("data/dictionarywords.json", "r") as file:
+                    common_words = json.load(file)
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                print(f"Error loading dictionary words list: {e}")
+                return 0
 
             longer_words = [word for word in common_words if len(word) >= 3]
             
@@ -161,7 +173,7 @@ class Password():
             else:
                 return 5
 
-    # Repeated characters (WORKING)
+    # Repeated characters
     def repeat_check(self):
         
         password_lower = self.password.lower()
@@ -245,7 +257,7 @@ if __name__ == "__main__":
     root.title("KeyStrength")
 
     # Window styling
-    root.geometry("850x450")
+    root.geometry("850x300")
     root.resizable(False, False)
 
     # Styling
@@ -305,7 +317,7 @@ if __name__ == "__main__":
 
     # Check strength button
     check_strength = tkb.Button(frame, text="Check", width=10, command=password_check)
-    check_strength.grid(column=0, row=2, pady=(65, 0), padx=40, sticky=(tk.W))
+    check_strength.grid(column=0, row=2, pady=(75, 0), padx=40, sticky=(tk.W))
 
     # Strength meter
     meter = tkb.Meter(frame, 
@@ -316,12 +328,6 @@ if __name__ == "__main__":
                       bootstyle="",  
                       amountused=0,)
     meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
-
-    # Feedback area
-    feedback_frame = tkb.Frame(frame, borderwidth=2, relief="solid", padding="60")
-    feedback_frame.grid(column=0, row=4, columnspan=4, pady=10, padx=39, sticky=(tk.W, tk.E, tk.N, tk.S))
-    feedback_area = tkb.Label(feedback_frame, font=main_font)
-    feedback_area.grid(row=3, column=0, columnspan=4)
 
     # Layout
     root.columnconfigure(1, weight=1)
