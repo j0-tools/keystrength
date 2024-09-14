@@ -73,7 +73,7 @@ class Password():
     def length_check(self):
         length = len(self.password)
         if length < 8:
-            return -15
+            return -20
         elif length < 11:
             return 5
         elif length < 13:
@@ -116,9 +116,9 @@ class Password():
     
     # Common passwords
     def common_passwords_check(self):
-        if len (self.password) >= 25:
+        if len (self.password) >= 223:
             return 5
-        if len (self.password) >= 20:
+        if len (self.password) >= 18:
             return 3
         else:
             try:
@@ -137,7 +137,7 @@ class Password():
     
     # Personal info (names, movies, etc)
     def common_names_check(self):
-        if len (self.password) >= 15:
+        if len (self.password) >= 18:
             return 5
         else:
             try:
@@ -156,7 +156,7 @@ class Password():
 
     # Dictionary words
     def dictionary_words_check(self):
-        if len (self.password) >= 15:
+        if len (self.password) >= 18:
             return 5
         else:
             try:
@@ -307,16 +307,22 @@ if __name__ == "__main__":
 
     def password_check(*args):
         password = password_var.get()
-        check = Password(password)
-        score = check.strength()
-        meter.configure(amountused=score)
+        if len(password) <= 5:
+            meter.configure(amountused=1, bootstyle="danger")
+        elif len(password) >= 8:
+            check = Password(password)
+            score = check.strength()
+            meter.configure(amountused=score)
 
-        if score <= 25:
-            meter.configure(bootstyle="danger")
-        elif score <= 75:
-            meter.configure(bootstyle="warning")
+            if score <= 25:
+                meter.configure(bootstyle="danger")
+            elif score <= 75:
+                meter.configure(bootstyle="warning")
+            else:
+                meter.configure(bootstyle="success")
+        
         else:
-            meter.configure(bootstyle="success")
+            meter.configure(amountused=1, bootstyle="danger")
 
     password_var.trace_add("write", password_check)
 
