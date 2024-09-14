@@ -290,20 +290,23 @@ if __name__ == "__main__":
 
     # Header
     header_label = tkb.Label(frame, text="KeyStrength", font=title_font)
-    subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords at the click of a button.", font=subtitle_font, foreground="#494949")
+    subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords.                                   ", font=subtitle_font, foreground="#494949")
     header_label.grid(column=0, row=0, sticky=(tk.W), padx=38, pady=5)    # Logo here? (Made space to left of header)
     subtitle_label.grid(column=0, row=1, sticky=(tk.W), padx=39)
 
     # Password input
     input_frame = tkb.Frame(frame)
     input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
-    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=55)
+
+    # Live checking
+    password_var = tk.StringVar()
+    password_entry = tkb.Entry(input_frame, textvariable=password_var, justify="left", font=main_font, width=55)
     password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
 
-    def password_check():
-        password = password_entry.get()
+    def password_check(*args):
+        password = password_var.get()
         check = Password(password)
         score = check.strength()
         meter.configure(amountused=score)
@@ -314,6 +317,8 @@ if __name__ == "__main__":
             meter.configure(bootstyle="warning")
         else:
             meter.configure(bootstyle="success")
+
+    password_var.trace_add("write", password_check)
 
     # Strength meter
     meter = tkb.Meter(frame, 
@@ -329,7 +334,6 @@ if __name__ == "__main__":
     root.columnconfigure(1, weight=1)
 
     # Binds
-    root.bind("<Return>", lambda event: password_check())
 
     # Event loop
     root.configure(bg=bg_colour)
