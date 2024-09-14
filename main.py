@@ -61,9 +61,31 @@ def console_check():
 ### PASSWORD CHECK FUNCTIONALITY ###
 
 class Password():
+
+    ### LOAD DATA INTO MEMORY ###
+
+    common_passwords = set()
+    common_names = set()
+    dictionary_words = set()
+
+    @classmethod
+    def load_dictionaries(cls):
+        try:
+            with open("data/passwords.json", "r") as file:
+                cls.common_passwords = set(json.load(file))
+            with open("data/names.json", "r") as file:
+                cls.common_names = set(json.load(file))
+            with open("data/dictionarywords.json", "r") as file:
+                cls.dictionary_words = set(json.load(file))
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            print(f"Error loading dictionaries: {e}")
+
+
     def __init__(self, password):
         self.password = password
         self.score = 0
+        if not Password.common_passwords:    # Lazy?
+            Password.load_dictionaries
 
 
 
@@ -116,62 +138,41 @@ class Password():
     
     # Common passwords
     def common_passwords_check(self):
-        if len (self.password) >= 223:
+        if len (self.password) >= 22:
             return 5
         if len (self.password) >= 18:
             return 3
+        
+        password_lower = self.password.lower()
+
+        if any(word.lower() in password_lower for word in self.common_passwords):
+            return -20
         else:
-            try:
-                with open ("data/passwords.json", "r") as file:
-                    common_passwords = json.load(file)
-            except (FileNotFoundError, json.JSONDecodeError) as e:
-                print(f"Error loading common passwords list: {e}")
-                return 0
-
-            password_lower = self.password.lower()
-
-            if any(word.lower() in password_lower for word in common_passwords):
-                return -20
-            else:
-                return 10
+            return 10
     
     # Personal info (names, movies, etc)
     def common_names_check(self):
         if len (self.password) >= 18:
             return 5
+
+        password_lower = self.password.lower()
+            
+        if any(name.lower() in password_lower for name in self.common_names):
+            return -5
         else:
-            try:
-                with open("data/names.json", "r") as file:
-                    common_names = json.load(file)
-            except (FileNotFoundError, json.JSONDecodeError) as e:
-                print(f"Error loading common names list: {e}")
-                return 0
-            
-            password_lower = self.password.lower()
-            
-            if any(name.lower() in password_lower for name in common_names):
-                return -5
-            else:
-                return 5
+            return 5
 
     # Dictionary words
     def dictionary_words_check(self):
         if len (self.password) >= 18:
             return 5
-        else:
-            try:
-                with open("data/dictionarywords.json", "r") as file:
-                    common_words = json.load(file)
-            except (FileNotFoundError, json.JSONDecodeError) as e:
-                print(f"Error loading dictionary words list: {e}")
-                return 0
 
-            longer_words = [word for word in common_words if len(word) >= 3]
-            
-            if any(word in self.password for word in longer_words):
-                return -5
-            else:
-                return 5
+        longer_words = [word for word in self.dictionary_words if len(word) >= 3]
+        
+        if any(word in self.password for word in longer_words):
+            return -5
+        else:
+            return 5
 
     # Repeated characters
     def repeat_check(self):
@@ -231,6 +232,8 @@ class Password():
     ### FINAL STRENGTH ###
 
     def strength(self):
+        if len(self.password) < 8:
+            return 1
         self.score = (
             self.length_check() +
             self.diversity_check() +
@@ -253,6 +256,7 @@ class Password():
 
 # Main
 if __name__ == "__main__":
+    Password.load_dictionaries()
     root = tk.Tk()
     root.title("KeyStrength")
 
