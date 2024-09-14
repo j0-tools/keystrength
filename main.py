@@ -315,10 +315,6 @@ if __name__ == "__main__":
         else:
             meter.configure(bootstyle="success")
 
-    # Check strength button
-    check_strength = tkb.Button(frame, text="Check", width=10, command=password_check)
-    check_strength.grid(column=0, row=2, pady=(75, 0), padx=40, sticky=(tk.W))
-
     # Strength meter
     meter = tkb.Meter(frame, 
                       subtext="Strength", 
