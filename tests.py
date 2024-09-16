@@ -75,62 +75,138 @@ class Password():
         has_digits = any(c.isdigit() for c in self.password)
         has_symbols = any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password)
 
+
+        # 1st column
         if has_digits and not (has_lower or has_upper or has_symbols):    # Numbers only
-            pass
+            if length <= 10:
+                return -99
+            elif length <= 15:
+                return -79
+            else:
+                return -59
+        
 
-        elif has_lower and not (has_upper or has_digits or has_symbols):    # Lowercase only 
-            pass
+        # 2nd column
+        elif has_lower and not (has_upper or has_digits or has_symbols):    # Lower only 
+            if length <= 10:
+                return -79
+            elif length <= 13:
+                return -59
+            elif length <= 17:
+                -39
+            else:
+                return 0
 
-        elif has_upper and not (has_lower or has_digits or has_symbols):    # Uppercase only 
-            pass
+        elif has_upper and not (has_lower or has_digits or has_symbols):    # Upper only 
+            if length <= 10:
+                return -79
+            elif length <= 13:
+                return -59
+            elif length <= 17:
+                -39
+            else:
+                return 0
+        
+
+        # 3rd column
+        elif has_lower and has_upper and not (has_digits or has_symbols):    # Upper and lower
+            if length <= 9:
+                return -79
+            elif length <= 11:
+                return -59
+            elif length <= 14:
+                return -39
+            else:
+                return 0
 
         elif has_digits and has_symbols and not (has_lower or has_upper):    # Digits and symbols
-            pass
+            if length <= 9:
+                return -79
+            elif length <= 11:
+                return -59
+            elif length <= 14:
+                return -39
+            else:
+                return 0
 
-        elif has_lower and has_symbols and not (has_upper or has_digits):    # Lowercase and symbols
-            pass
+        elif has_lower and has_symbols and not (has_upper or has_digits):    # Lower and symbols
+            if length <= 9:
+                return -79
+            elif length <= 11:
+                return -59
+            elif length <= 14:
+                return -39
+            else:
+                return 0
 
         elif has_upper and has_symbols and not (has_lower or has_digits):    # Upper and symbols
-            pass
+            if length <= 9:
+                return -79
+            elif length <= 11:
+                return -59
+            elif length <= 14:
+                return -39
+            else:
+                return 0
 
-        elif has_lower and has_upper and not (has_digits or has_symbols):    # Upper and lowercase
-            pass
 
+        # 4th column
         elif has_lower and has_upper and has_symbols and not has_digits:    # Lower, upper and symbols
-            pass
+            if length <= 10:
+                return -59
+            elif length <= 13:
+                return -39
+            else:
+                return 0
 
         elif has_lower and has_digits and has_symbols and not has_upper:    # Lower, digit and symbol
-            pass
+            if length <= 10:
+                return -59
+            elif length <= 13:
+                return -39
+            else:
+                return 0
 
         elif has_upper and has_digits and has_symbols and not has_lower:    # Upper, digit and symbol
-            pass
+            if length <= 10:
+                return -59
+            elif length <= 13:
+                return -39
+            else:
+                return 0
 
         elif has_digits and has_lower and has_upper and not has_symbols:    # Digit, upper, and lower
-            pass
-
-        elif has_digits and has_lower and has_upper and has_symbols:    # All
-            pass
-
-
-
-            
+            if length <= 10:
+                return -59
+            elif length <= 13:
+                return -39
+            else:
+                return 0
         
-            
+
+        # 5th column
+        elif has_digits and has_lower and has_upper and has_symbols:    # All
+            if length <= 10:
+                return -59
+            if length <= 12:
+                return -39
+            else:
+                return 0
 
 
-    # # Common passwords (WORKING)
-    # def common_passwords_check(self):
-    #     with open ("data/passwords.json", "r") as file:
-    #         common_passwords = json.load(file)
+    # Common passwords (WORKING)
+    def common_passwords_check(self):
+        with open ("data/passwords.json", "r") as file:
+            common_passwords = json.load(file)
 
-    #     common_passwords_lower = {pw.lower() for pw in common_passwords}    # Convert list to lower rather than input (efficiency)
+        common_passwords_lower = {pw.lower() for pw in common_passwords}    # Convert list to lower rather than input (efficiency)
 
-    #     password_lower = self.password.lower()
+        password_lower = self.password.lower()
 
-    #     if password_lower in common_passwords_lower:
-    #         return -100
-    #     else:
-    #         return 6
+        if password_lower in common_passwords_lower:
+            return -100
+        else:
+            return 6
     
     # # Personal info (names, movies, etc) (WORKING)
     # def common_names_check(self):
