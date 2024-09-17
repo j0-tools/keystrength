@@ -31,28 +31,30 @@ class Password():
         if length < 8: 
             return -99
         base = length * 2
-        bonus = categories * 10
+        bonus = categories * 6
 
         return base + bonus
 
 
     # Common passwords (WORKING)
     def common_passwords_check(self):
-        with open ("data/passwords.json", "r") as file:
+        with open("data/passwords.json", "r") as file:
             common_passwords = json.load(file)
 
         common_passwords_lower = {pw.lower() for pw in common_passwords}    # Convert list to lower rather than input (efficiency)
 
         password_lower = self.password.lower()
 
-        if password_lower in common_passwords_lower:
+        if password_lower in common_passwords_lower:    # Full match
             return -99
+        elif any(common in password_lower for common in common_passwords_lower):    # Partial match penalty
+            return -25
         else:
             return 6
     
     # Personal info (names, movies, etc) (WORKING)
     def common_names_check(self):
-        if len (self.password) >= 19:
+        if len(self.password) >= 19:
             return 12
         else:
             with open("data/names.json", "r") as file:
@@ -61,13 +63,13 @@ class Password():
             password_lower = self.password.lower()
             
             if any(name.lower() in password_lower for name in common_names):
-                return -22
+                return -18
             else:
                 return 6
 
     # Dictionary words (WORKING)
     def dictionary_words_check(self):
-        if len (self.password) >= 19:
+        if len(self.password) >= 19:
             return 12
         else:
             with open("data/dictionarywords.json", "r") as file:
@@ -75,8 +77,10 @@ class Password():
 
             longer_words = [word for word in common_words if len(word) >= 3]
             
-            if any(word in self.password for word in longer_words):
-                return -22
+            if self.password.lower() in longer_words:
+                return -40
+            elif any(word in self.password.lower() for word in longer_words):    # Partial
+                return -14
             else:
                 return 6
 
@@ -107,9 +111,9 @@ class Password():
         "!@#", "@#$", "#$%", "$%^", "%^&", "^&*", "&*(", "*()"]
 
         if any(password_lower.count(c) > 2 for c in set(password_lower)):
-            return -12
+            return -15
         elif any(seq in password_lower for seq in common):
-            return -12
+            return -23
         else:
             return 6
         
@@ -119,17 +123,17 @@ class Password():
         entropy = len(self.password) * math.log2(len(char_set))
 
         if entropy < 5:
-            return -98
+            return -95
         elif entropy < 25:
             return -60
         elif entropy < 30:
-            return 0
+            return -30
         elif entropy < 45:
-            return 8
+            return 10
         elif entropy < 65:
-            return 14
+            return 20
         else:
-            return 23
+            return 30
 
 
 
@@ -144,8 +148,12 @@ class Password():
             self.repeat_check() +
             self.entropy_check() 
         )
-        if len(self.password) > 20:
-            self.score += 10
+        
+        if len(self.password) >= 16:
+            self.score += 17
+        elif len(self.password) >= 25:
+            self.score += 31
+
         return max(1, min(100, self.score))    # 1-100
 
 
