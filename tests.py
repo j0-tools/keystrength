@@ -46,16 +46,16 @@ class Password():
         password_lower = self.password.lower()
 
         if password_lower in common_passwords_lower:    # Full match
-            return -99
+            return -10
         elif any(common in password_lower for common in common_passwords_lower):    # Partial match penalty
-            return -25
+            return -10
         else:
-            return 6
+            return 5
     
     # Personal info (names, movies, etc) (WORKING)
     def common_names_check(self):
         if len(self.password) >= 19:
-            return 12
+            return 11
         else:
             with open("data/names.json", "r") as file:
                 common_names = json.load(file)
@@ -63,14 +63,14 @@ class Password():
             password_lower = self.password.lower()
             
             if any(name.lower() in password_lower for name in common_names):
-                return -18
+                return -5
             else:
-                return 6
+                return 5
 
     # Dictionary words (WORKING)
     def dictionary_words_check(self):
         if len(self.password) >= 19:
-            return 12
+            return 11
         else:
             with open("data/dictionarywords.json", "r") as file:
                 common_words = json.load(file)
@@ -78,11 +78,11 @@ class Password():
             longer_words = [word for word in common_words if len(word) >= 3]
             
             if self.password.lower() in longer_words:
-                return -40
+                return -9
             elif any(word in self.password.lower() for word in longer_words):    # Partial
-                return -14
+                return -9
             else:
-                return 6
+                return 5
 
     # Repeated characters (WORKING)
     def repeat_check(self):
@@ -111,11 +111,11 @@ class Password():
         "!@#", "@#$", "#$%", "$%^", "%^&", "^&*", "&*(", "*()"]
 
         if any(password_lower.count(c) > 2 for c in set(password_lower)):
-            return -15
+            return -11
         elif any(seq in password_lower for seq in common):
-            return -23
+            return -16
         else:
-            return 6
+            return 5
         
     # Entropy (randomness)
     def entropy_check(self):
@@ -125,9 +125,9 @@ class Password():
         if entropy < 5:
             return -95
         elif entropy < 25:
-            return -60
+            return -10
         elif entropy < 30:
-            return -30
+            return -0
         elif entropy < 45:
             return 10
         elif entropy < 65:

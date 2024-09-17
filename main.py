@@ -261,7 +261,7 @@ if __name__ == "__main__":
     root.title("KeyStrength")
 
     # Window styling
-    root.geometry("850x300")
+    root.geometry("850x500")
     root.resizable(False, False)
 
     # Styling
@@ -301,34 +301,27 @@ if __name__ == "__main__":
     # Password input
     input_frame = tkb.Frame(frame)
     input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
-
-    # Live checking
-    password_var = tk.StringVar()
-    password_entry = tkb.Entry(input_frame, textvariable=password_var, justify="left", font=main_font, width=55)
+    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=55)
     password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
 
-    def password_check(*args):
-        password = password_var.get()
-        if len(password) <= 5:
-            meter.configure(amountused=1, bootstyle="danger")
-        elif len(password) >= 8:
-            check = Password(password)
-            score = check.strength()
-            meter.configure(amountused=score)
+    def password_check():
+        password = password_entry.get()
+        check = Password(password)
+        score = check.strength()
+        meter.configure(amountused=score)
 
-            if score <= 25:
-                meter.configure(bootstyle="danger")
-            elif score <= 75:
-                meter.configure(bootstyle="warning")
-            else:
-                meter.configure(bootstyle="success")
-        
+        if score <= 25:
+            meter.configure(bootstyle="danger")
+        elif score <= 75:
+            meter.configure(bootstyle="warning")
         else:
-            meter.configure(amountused=1, bootstyle="danger")
-
-    password_var.trace_add("write", password_check)
+            meter.configure(bootstyle="success")
+    
+    # Check strength button
+    check_strength = tkb.Button(frame, text="Check", width=10, command=password_check)
+    check_strength.grid(column=0, row=2, pady=(65, 0), padx=40, sticky=(tk.W))
 
     # Strength meter
     meter = tkb.Meter(frame, 
@@ -340,10 +333,17 @@ if __name__ == "__main__":
                       amountused=0,)
     meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
 
+    # Feedback area
+    feedback_frame = tkb.Frame(frame, borderwidth=2, relief="solid", padding="60")
+    feedback_frame.grid(column=0, row=4, columnspan=4, pady=10, padx=39, sticky=(tk.W, tk.E, tk.N, tk.S))
+    feedback = tkb.Label(feedback_frame, font=main_font)
+    feedback.grid(row=3, column=0, columnspan=4)
+
     # Layout
     root.columnconfigure(1, weight=1)
 
     # Binds
+    root.bind("<Return>", lambda event: password_check)
 
     # Event loop
     root.configure(bg=bg_colour)
