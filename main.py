@@ -261,16 +261,16 @@ if __name__ == "__main__":
     root.title("KeyStrength")
 
     # Window styling
-    root.geometry("850x500")
+    root.geometry("880x800")
     root.resizable(False, False)
 
     # Styling
-    bg_colour = "#f3f3f3"
-    fg_colour = "#191919"
+    bg_colour = "#212121"
+    fg_colour = "#f3f3f3"
     accent_colour = "#f3f3f3"
-    entry_bg_colour = "#ffffff"
-    button_colour = "#0f6aff"
-    button_hover_colour = "#0c55cc"
+    entry_bg_colour = "#212121"
+    button_colour = "#5cc673"
+    button_hover_colour = "#82ef9a"
 
     title_font = tkfont.Font(family="Gadugi", size=30, weight="bold")
     subtitle_font = tkfont.Font(family="Gadugi", size=13)
@@ -281,9 +281,10 @@ if __name__ == "__main__":
     style.theme_use("cosmo")
     style.configure("TFrame", background=bg_colour)
     style.configure("TLabel", background=bg_colour, foreground=fg_colour, font=main_font)
-    style.configure("TEntry", fieldbackground=entry_bg_colour, foreground=fg_colour, font=main_font, relief="ridge")
-    style.configure("TButton", background=button_colour, foreground=accent_colour, font=main_font)
-    style.map("TButton", background=[('active', button_hover_colour)])
+    style.configure("TEntry", fieldbackground=entry_bg_colour, foreground=fg_colour, font=main_font, borderwidth=1, relief="solid")
+    style.configure("Custom.TButton", background=button_colour, foreground=bg_colour, font=main_font, borderwidth=0, focuscolor=button_colour, highlightthickness=0)
+    style.map("TEntry", bordercolor=[('focus', button_colour)], lightcolor=[('focus', button_colour)], darkcolor=[('focus', button_colour)])
+    style.map("Custom.TButton", background=[('active', button_hover_colour)], bordercolor=[('focus', button_colour)], highlightcolor=[('focus', button_colour)])
                       
     # Configure main frame
     frame = tkb.Frame(root, padding="10")
@@ -293,15 +294,15 @@ if __name__ == "__main__":
     root.rowconfigure(0, weight=1)
 
     # Header
-    header_label = tkb.Label(frame, text="KeyStrength", font=title_font)
-    subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords.                                   ", font=subtitle_font, foreground="#494949")
+    header_label = tkb.Label(frame, text="KeyStrength", font=title_font, anchor="center")
+    subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords.                                   ", font=subtitle_font, foreground="#9c9c9c")
     header_label.grid(column=0, row=0, sticky=(tk.W), padx=38, pady=5)    # Logo here? (Made space to left of header)
     subtitle_label.grid(column=0, row=1, sticky=(tk.W), padx=39)
 
-    # Password input
+    # Password input 
     input_frame = tkb.Frame(frame)
     input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
-    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=55)
+    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=35)
     password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
@@ -320,8 +321,8 @@ if __name__ == "__main__":
             meter.configure(bootstyle="success")
     
     # Check strength button
-    check_strength = tkb.Button(frame, text="Check", width=10, command=password_check)
-    check_strength.grid(column=0, row=2, pady=(65, 0), padx=40, sticky=(tk.W))
+    check_strength = tkb.Button(frame, text="Check", width=10, command=password_check, style="Custom.TButton")
+    check_strength.grid(column=0, row=2, pady=(85, 0), padx=40, sticky=(tk.W))
 
     # Strength meter
     meter = tkb.Meter(frame, 
@@ -333,19 +334,15 @@ if __name__ == "__main__":
                       amountused=0,)
     meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
 
-    # Feedback area
-    feedback_frame = tkb.Frame(frame, borderwidth=2, relief="solid", padding="60")
-    feedback_frame.grid(column=0, row=4, columnspan=4, pady=10, padx=39, sticky=(tk.W, tk.E, tk.N, tk.S))
-    feedback = tkb.Label(feedback_frame, font=main_font)
-    feedback.grid(row=3, column=0, columnspan=4)
-
     # Layout
     root.columnconfigure(1, weight=1)
+    check_strength.config(takefocus=0)
 
     # Binds
     root.bind("<Return>", lambda event: password_check)
 
     # Event loop
+    root.option_add('*focusColor', bg_colour)
     root.configure(bg=bg_colour)
     root.mainloop()
 
