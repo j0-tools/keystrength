@@ -261,7 +261,7 @@ if __name__ == "__main__":
     root.title("KeyStrength")
 
     # Window styling
-    root.geometry("700x250")
+    root.geometry("700x235")
     root.resizable(False, False)
 
     # Styling
@@ -269,8 +269,8 @@ if __name__ == "__main__":
     fg_colour = "#f3f3f3"
     accent_colour = "#f3f3f3"
     entry_bg_colour = "#212121"
-    button_colour = "#5cc673"
-    button_hover_colour = "#82ef9a"
+    button_colour = "#00bc8c"
+    button_hover_colour = "#00e6ab"
 
     title_font = tkfont.Font(family="Gadugi", size=30, weight="bold")
     subtitle_font = tkfont.Font(family="Gadugi", size=13)
