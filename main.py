@@ -261,7 +261,7 @@ if __name__ == "__main__":
     root.title("KeyStrength")
 
     # Window styling
-    root.geometry("880x800")
+    root.geometry("700x250")
     root.resizable(False, False)
 
     # Styling
@@ -278,7 +278,7 @@ if __name__ == "__main__":
     result_font = tkfont.Font(family="Gadugi", size=16)
     
     style = tkb.Style()
-    style.theme_use("cosmo")
+    style.theme_use("darkly")
     style.configure("TFrame", background=bg_colour)
     style.configure("TLabel", background=bg_colour, foreground=fg_colour, font=main_font)
     style.configure("TEntry", fieldbackground=entry_bg_colour, foreground=fg_colour, font=main_font, borderwidth=1, relief="solid")
@@ -295,15 +295,13 @@ if __name__ == "__main__":
 
     # Header
     header_label = tkb.Label(frame, text="KeyStrength", font=title_font, anchor="center")
-    subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords.                                   ", font=subtitle_font, foreground="#9c9c9c")
-    header_label.grid(column=0, row=0, sticky=(tk.W), padx=38, pady=5)    # Logo here? (Made space to left of header)
-    subtitle_label.grid(column=0, row=1, sticky=(tk.W), padx=39)
+    subtitle_label = tkb.Label(frame, text="Assess the strength of your passwords.", font=subtitle_font, foreground="#9c9c9c")
+    header_label.grid(column=0, row=0, columnspan=2, sticky=(tk.W), padx=38, pady=(0, 0))
+    subtitle_label.grid(column=0, row=1, columnspan=2, sticky=(tk.W), padx=39, pady=(0, 30))
 
     # Password input 
-    input_frame = tkb.Frame(frame)
-    input_frame.grid(column=0, row=2, columnspan=3, pady=(0, 20), sticky=(tk.E, tk.W))
-    password_entry = tkb.Entry(input_frame, justify="left", font=main_font, width=35)
-    password_entry.grid(row=0, column=1, sticky=(tk.W), padx=40, pady=20)
+    password_entry = tkb.Entry(frame, justify="left", font=main_font, width=35)
+    password_entry.grid(row=2, column=0, sticky=(tk.W), padx=40, pady=(0, 5))
     password_entry.configure(takefocus=1)
     password_entry.focus_set()
 
@@ -322,20 +320,21 @@ if __name__ == "__main__":
     
     # Check strength button
     check_strength = tkb.Button(frame, text="Check", width=10, command=password_check, style="Custom.TButton")
-    check_strength.grid(column=0, row=2, pady=(85, 0), padx=40, sticky=(tk.W))
+    check_strength.grid(column=0, row=3, pady=(5, 0), padx=40, sticky=(tk.W))
 
     # Strength meter
     meter = tkb.Meter(frame, 
+                      metersize=190,
                       subtext="Strength", 
                       interactive=False, 
                       metertype="semi", 
                       stripethickness=10, 
                       bootstyle="",  
                       amountused=0,)
-    meter.grid(column=1, row=0, rowspan=3, padx=(50, 10), pady=20, sticky=(tk.S, tk.E))
+    meter.place(relx=0.815, rely=0.5, anchor=tk.CENTER)
 
     # Layout
-    root.columnconfigure(1, weight=1)
+    frame.columnconfigure(1, weight=1)
     check_strength.config(takefocus=0)
 
     # Binds
