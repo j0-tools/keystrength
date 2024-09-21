@@ -95,25 +95,21 @@ class Password():
     def length_check(self):
         length = len(self.password)
         if length < 8:
-            return -20
-        elif length < 11:
-            return 5
-        elif length < 13:
-            return 8
-        elif length < 15:
-            return 12
-        elif length < 17:
+            return -99
+        elif length < 10:
+            return 0
+        elif length < 12:
+            return 10
+        elif length < 14:
             return 15
-        elif length < 19:
-            return 20
-        elif length < 22:
-            return 25
-        elif length < 24:
+        elif length < 16:
+            return 19
+        elif length < 18:
+            return 27
+        elif length < 20:
             return 30
-        elif length < 28:
-            return 35
         else:
-            return 40
+            return 35
     
     # Diversity check
     def diversity_check(self):
@@ -130,49 +126,50 @@ class Password():
         if any(c in '''!@#$%^&*()-_=+{}[];:"\'<>,.?/''' for c in self.password):
             categories += 1
 
-        score = categories * 3
+        score = categories * 5
         if categories == 4:
-            score += 15
+            score += 10
 
         return score
     
     # Common passwords
     def common_passwords_check(self):
-        if len (self.password) >= 22:
-            return 5
-        if len (self.password) >= 18:
-            return 3
+        if len (self.password) >= 16:
+            return 10
         
         password_lower = self.password.lower()
 
-        if any(word.lower() in password_lower for word in self.common_passwords):
-            return -20
-        else:
-            return 10
+        for word in self.common_passwords:
+            if word.lower() == password_lower:    # Exact match
+                return -20
+            elif word.lower() in password_lower and len(word) > len(password_lower) / 2:    # Part match
+                return -10
+            else:
+                return 5
     
     # Personal info (names, movies, etc)
     def common_names_check(self):
-        if len (self.password) >= 18:
-            return 5
+        if len (self.password) >= 16:
+            return 10
 
         password_lower = self.password.lower()
             
         if any(name.lower() in password_lower for name in self.common_names):
-            return -5
+            return -12
         else:
-            return 5
+            return 10
 
     # Dictionary words
     def dictionary_words_check(self):
-        if len (self.password) >= 18:
-            return 5
+        if len (self.password) >= 16:
+            return 10
 
         longer_words = [word for word in self.dictionary_words if len(word) >= 3]
         
         if any(word in self.password for word in longer_words):
-            return -5
+            return -12
         else:
-            return 5
+            return 10
 
     # Repeated characters
     def repeat_check(self):
@@ -201,11 +198,11 @@ class Password():
         "!@#", "@#$", "#$%", "$%^", "%^&", "^&*", "&*(", "*()"]
 
         if any(password_lower.count(c) > 2 for c in set(password_lower)):
-            return -3
+            return -10
         elif any(seq in password_lower for seq in common):
-            return -3
+            return -10
         else:
-            return 8
+            return 10
         
     # Entropy (randomness)
     def entropy_check(self):
@@ -217,15 +214,11 @@ class Password():
         elif entropy < 45:
             return 0
         elif entropy < 55:
-            return 8
-        elif entropy < 70:
             return 15
         elif entropy < 85:
-            return 22
-        elif entropy < 105:
-            return 28
+            return 25
         else:
-            return 35
+            return 60
 
 
 
@@ -243,10 +236,8 @@ class Password():
             self.repeat_check() +
             self.entropy_check() 
         )
-        if self.score >= 50:
-            self.score += 5
-        if len(self.password) > 30:
-            self.score += 5
+        if len(self.password) > 18:
+            self.score += 20
         return max(1, min(100, self.score))    # 1-100
 
 
@@ -338,7 +329,7 @@ if __name__ == "__main__":
     check_strength.config(takefocus=0)
 
     # Binds
-    root.bind("<Return>", lambda event: password_check)
+    root.bind("<Return>", lambda event: password_check())
 
     # Event loop
     root.option_add('*focusColor', bg_colour)
