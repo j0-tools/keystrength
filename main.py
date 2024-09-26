@@ -1,4 +1,6 @@
 import math
+import os
+import sys
 import json
 
 import tkinter as tk
@@ -17,47 +19,6 @@ Image.CUBIC = Image.BICUBIC
 
 
 
-### CLI FIRST RUN ###
-
-
-# Test loop
-def console_check():
-
-    print("\n\n### KeyStrength Password Checker ###")
-
-    while True:
-        
-        # Prompt for password
-        pw = input("\nType a password: ")
-        length = len(pw)
-        
-        # Check if password empty
-        if pw == "":
-            print("Password cannot be empty.\n")
-            continue
-        
-        # Length check
-        if length < 8:
-            print("Password is very weak.\nPassword needs more characters.\n")
-        elif length < 12:
-            print("Password is weak.\nPassword needs more characters.\n")
-        elif length < 16:
-            print("Password is moderate.\nTo strengthen, try using a password more than 15 characters in length.\n")
-        else:
-            print("Password is strong.\nWell done!\n")
-
-        # Continue?
-        yn = input("Try another password? (Y/N): ")
-        if yn.upper() == "Y":
-            continue
-        else:
-            break
-
-    print("\nThanks for using KeyStrength!")
-#console_check()
-
-
-
 ### PASSWORD CHECK FUNCTIONALITY ###
 
 class Password():
@@ -70,12 +31,23 @@ class Password():
 
     @classmethod
     def load_dictionaries(cls):
+        # Base path for JSON files
+        if getattr(sys, 'frozen', False):    # Checks if app is "frozen" (i.e packaged wit PyInstaller)
+            base_path = sys._MEIPASS    # Contains path to temp folder where PyInstaller extracts app files
+        else:
+            base_path = os.path.abspath(".")
+
+        # Constructing full file paths
+        passwords_json = os.path.join(base_path, 'data/passwords.json')
+        names_json = os.path.join(base_path, 'data/names.json')
+        dictionary_json = os.path.join(base_path, 'data/dictionarywords.json')
+
         try:
-            with open("data/passwords.json", "r") as file:
+            with open(passwords_json, "r") as file:
                 cls.common_passwords = set(json.load(file))
-            with open("data/names.json", "r") as file:
+            with open(names_json, "r") as file:
                 cls.common_names = set(json.load(file))
-            with open("data/dictionarywords.json", "r") as file:
+            with open(dictionary_json, "r") as file:
                 cls.dictionary_words = set(json.load(file))
         except (FileNotFoundError, json.JSONDecodeError) as e:
             print(f"Error loading dictionaries: {e}")
@@ -85,7 +57,7 @@ class Password():
         self.password = password
         self.score = 0
         if not Password.common_passwords:    # Lazy?
-            Password.load_dictionaries
+            Password.load_dictionaries()
 
 
 
@@ -99,17 +71,17 @@ class Password():
         elif length < 10:
             return 0
         elif length < 12:
-            return 10
+            return 11
         elif length < 14:
-            return 15
+            return 16
         elif length < 16:
-            return 19
+            return 20
         elif length < 18:
-            return 27
+            return 28
         elif length < 20:
-            return 30
+            return 31
         else:
-            return 35
+            return 36
     
     # Diversity check
     def diversity_check(self):
@@ -128,15 +100,13 @@ class Password():
 
         score = categories * 5
         if categories == 4:
-            score += 10
+            score += 17
 
         return score
     
     # Common passwords
     def common_passwords_check(self):
-        if len (self.password) >= 16:
-            return 10
-        
+
         password_lower = self.password.lower()
 
         for word in self.common_passwords:
@@ -144,12 +114,11 @@ class Password():
                 return -20
             elif word.lower() in password_lower and len(word) > len(password_lower) / 2:    # Part match
                 return -10
-            else:
-                return 5
+        return 10 if len(self.password) >= 18 else 3
     
     # Personal info (names, movies, etc)
     def common_names_check(self):
-        if len (self.password) >= 16:
+        if len (self.password) >= 18:
             return 10
 
         password_lower = self.password.lower()
@@ -157,11 +126,11 @@ class Password():
         if any(name.lower() in password_lower for name in self.common_names):
             return -12
         else:
-            return 10
+            return 11
 
     # Dictionary words
     def dictionary_words_check(self):
-        if len (self.password) >= 16:
+        if len (self.password) >= 18:
             return 10
 
         longer_words = [word for word in self.dictionary_words if len(word) >= 3]
@@ -212,13 +181,13 @@ class Password():
         if entropy < 5:
             return -50
         elif entropy < 45:
-            return 0
+            return 2
         elif entropy < 55:
-            return 15
+            return 17
         elif entropy < 85:
-            return 25
+            return 27
         else:
-            return 60
+            return 62
 
 
 
